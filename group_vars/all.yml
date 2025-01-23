@@ -1,0 +1,17 @@
+k8s_namespace: "default"
+
+cnpg_chart: "cloudnative-pg"
+cnpg_chart_version: "1.18.0"
+cnpg_repo: "https://cloudnative-pg.github.io/charts"
+
+rook_ceph_chart: "rook-ceph"
+rook_ceph_chart_version: "v1.10.8"
+rook_ceph_repo: "https://charts.rook.io/release"
+
+istio_chart: "istio-base"
+istio_chart_version: "1.18.2"
+istio_repo: "https://istio-release.storage.googleapis.com/charts"
+
+prometheus_chart: "kube-prometheus-stack"
+prometheus_chart_version: "48.1.0"
+prometheus_repo: "https://prometheus-community.github.io/helm-charts"
