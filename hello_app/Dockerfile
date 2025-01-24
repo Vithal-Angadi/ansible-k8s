@@ -1,11 +1,9 @@
-# dummy_app.py
-from flask import Flask
+# Dockerfile
+FROM python:3.9-slim
 
-app = Flask(__name__)
+WORKDIR /app
+COPY dummy_app.py /app
+RUN pip install flask
 
-@app.route('/')
-def hello_world():
-    return 'Hello, Kubernetes!'
+CMD ["python", "dummy_app.py"]
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
