@@ -1,41 +1,19 @@
 - name: Add Helm repositories
-  community.kubernetes.helm_repository:
+  kubernetes.core.helm_repository:
     name: "{{ item.name }}"
-    repo_url: "{{ item.url }}"
-  with_items:
-    - { name: "cloudnative-pg", url: "{{ cnpg_repo }}" }
-    - { name: "rook-ceph", url: "{{ rook_ceph_repo }}" }
-    - { name: "istio", url: "{{ istio_repo }}" }
-    - { name: "prometheus", url: "{{ prometheus_repo }}" }
+    repo_url: "{{ item.repo }}"
+  loop: "{{ charts }}"
+  loop_control:
+    label: "{{ item.name }}"
 
-- name: Deploy cnpg PostgreSQL
-  community.kubernetes.helm:
-    name: "cnpg"
-    chart_ref: "{{ cnpg_chart }}"
+- name: Deploy Helm charts
+  kubernetes.core.helm:
+    name: "{{ item.name }}"
+    chart_ref: "{{ item.name }}/{{ item.chart }}"
     release_namespace: "{{ k8s_namespace }}"
-    chart_version: "{{ cnpg_chart_version }}"
-    values: "{{ lookup('template', 'cnpg-values.yaml.j2') }}"
+    chart_version: "{{ item.version }}"
+    values: "{{ lookup('template', 'templates/' + item.values_template) | from_yaml }}"
+  loop: "{{ charts }}"
+  loop_control:
+    label: "{{ item.name }}"
 
-- name: Deploy Rook-Ceph
-  community.kubernetes.helm:
-    name: "rook-ceph"
-    chart_ref: "{{ rook_ceph_chart }}"
-    release_namespace: "{{ k8s_namespace }}"
-    chart_version: "{{ rook_ceph_chart_version }}"
-    values: "{{ lookup('template', 'rook-ceph-values.yaml.j2') }}"
-
-- name: Deploy Istio
-  community.kubernetes.helm:
-    name: "istio"
-    chart_ref: "{{ istio_chart }}"
-    release_namespace: "{{ k8s_namespace }}"
-    chart_version: "{{ istio_chart_version }}"
-    values: "{{ lookup('template', 'istio-values.yaml.j2') }}"
-
-- name: Deploy Prometheus
-  community.kubernetes.helm:
-    name: "prometheus"
-    chart_ref: "{{ prometheus_chart }}"
-    release_namespace: "{{ k8s_namespace }}"
-    chart_version: "{{ prometheus_chart_version }}"
-    values: "{{ lookup('template', 'prometheus-values.yaml.j2') }}"
